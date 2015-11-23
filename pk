@@ -1,0 +1,7 @@
+#!/bin/bash
+# Bradley Beth, Tian Zhang
+# Process kill
+# run as ./pk COMMAND_TO_KILL
+for KILLPID in `ps ax | grep $1 | awk ' { print $1;}'`; do
+  kill -9 $KILLPID;
+done
