@@ -14,7 +14,7 @@ public class Node {
 	public HashSet<Integer> serverIds;
 	protected NetController nc;
 	protected Config config;
-
+	
 	public Node(int id, Set<Integer> IDset) {
 		pid = id;
 		serverIds = new HashSet<Integer>();

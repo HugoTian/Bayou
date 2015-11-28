@@ -3,8 +3,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-
-
 public class Master {
 
 	public static HashMap<Integer, Server> servers = new HashMap<Integer, Server>();
@@ -71,12 +69,14 @@ public class Master {
 				 * Pause the system and don't allow any Anti-Entropy messages to
 				 * propagate through the system
 				 */
+				Server.pauseAnti_Entropy();
 				break;
 			case "start":
 				/*
 				 * Resume the system and allow any Anti-Entropy messages to
 				 * propagate through the system
 				 */
+				Server.startAnti_Entropy();
 				break;
 			case "stabilize":
 				/*
