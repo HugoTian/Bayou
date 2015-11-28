@@ -31,6 +31,7 @@ public class Master {
 				 * Retire the server with the id specified. This should block until
 				 * the server can tell another server of its retirement
 				 */ 
+				servers.get(serverId).shutdown();
 				servers.put(serverId, null);
 				servers.remove(serverId);
 				break;
