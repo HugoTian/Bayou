@@ -10,6 +10,7 @@ package com.cs380d.framework;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -18,13 +19,13 @@ public class Config {
   /**
    * Array of addresses of other hosts.  All hosts should have identical info here.
    */
-  public InetAddress[] addresses;
+  public ArrayList<InetAddress> addresses;
 
 
   /**
    * Array of listening port of other hosts.  All hosts should have identical info here.
    */
-  public int[] ports;
+  public ArrayList<Integer> ports;
 
   /**
    * Total number of hosts
@@ -72,13 +73,13 @@ public class Config {
 
     numProcesses = numServers;
     procNum = index;
-    addresses = new InetAddress[numProcesses];
-    ports = new int[numProcesses];
+    addresses = new ArrayList<InetAddress>(numProcesses);
+    ports = new ArrayList<Integer>(numProcesses);
 
     for (int i = 0; i < numProcesses; i++) {
-      ports[i] = PORTBASE + i;
+      ports.set(i,(PORTBASE + i));
       try {
-        addresses[i] = InetAddress.getByName(ADDR);
+        addresses.set(i,InetAddress.getByName(ADDR));
       } catch (UnknownHostException e) {
         e.printStackTrace();
       }
@@ -92,4 +93,16 @@ public class Config {
   public Config() {
   }
 
+  public void addNode() {
+
+	ports.add(numProcesses,(PORTBASE + numProcesses));
+	try {
+	  addresses.set(numProcesses,InetAddress.getByName(ADDR));
+	} catch (UnknownHostException e) {
+	  e.printStackTrace();
+	}
+	numProcesses++;
+	//for (int i = 0; i < numProcesses; i++)
+	//  System.out.printf("%d: %d @ %s\n", i, ports.get(i), addresses.get(i));  
+  }  
 }

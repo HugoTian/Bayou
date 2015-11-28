@@ -17,7 +17,7 @@ public class ListenServer extends Thread {
 	public volatile boolean killSig = false;
 	final int port;
 	final int procNum;
-	final List<IncomingSock> socketList;
+		  List<IncomingSock> socketList;
 	final Config conf;
 	final ServerSocket serverSock;
 
@@ -26,7 +26,7 @@ public class ListenServer extends Thread {
 		this.socketList = sockets;
 
 		procNum = conf.procNum;
-		port = conf.ports[procNum];
+		port = conf.ports.get(procNum);
 		try {
 			serverSock = new ServerSocket(port);
 			conf.logger.info(String.format(
@@ -40,6 +40,10 @@ public class ListenServer extends Thread {
 		}
 	}
 
+	public void update(List<IncomingSock> sockets) {
+		this.socketList = sockets;
+	}
+	
 	public void run() {
 		while (!killSig) {
 			try {

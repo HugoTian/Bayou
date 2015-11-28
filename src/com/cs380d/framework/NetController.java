@@ -28,23 +28,37 @@ import java.util.logging.Level;
 public class NetController {
 	private final Config config;
 	private final List<IncomingSock> inSockets;
-	private final OutgoingSock[] outSockets;
+	private final ArrayList<OutgoingSock> outSockets;
 	private final ListenServer listener;
 	
 	public NetController(Config config) {
 		this.config = config;
 		inSockets = Collections.synchronizedList(new ArrayList<IncomingSock>());
 		listener = new ListenServer(config, inSockets);
-		outSockets = new OutgoingSock[config.numProcesses];
+		outSockets = new ArrayList<OutgoingSock>(config.numProcesses);
 		listener.start();
+	}
+	
+	/**
+	 * Adding a node will
+	 *   add to the ports, addresses, and numProcesses in the config file
+	 *   update the listener insockets (may not be necessary)
+	 *   grow the outSockets to account for the new Node
+	 *   
+	 *   BGB
+	 */
+	public void add() {
+		config.addNode();
+		listener.update(inSockets);						//BGB: needed?
+		outSockets.ensureCapacity(outSockets.size()+1);
 	}
 	
 	// Establish outgoing connection to a process
 	private synchronized void initOutgoingConn(int proc) throws IOException {
-		if (outSockets[proc] != null)
+		if (outSockets.get(proc) != null)
 			throw new IllegalStateException("proc " + proc + " not null");
 		
-		outSockets[proc] = new OutgoingSock(new Socket(config.addresses[proc], config.ports[proc]));
+		outSockets.set(proc, new OutgoingSock(new Socket(config.addresses.get(proc), config.ports.get(proc))));
 		config.logger.info(String.format("Server %d: Socket to %d established", 
 				config.procNum, proc));
 	}
@@ -59,20 +73,20 @@ public class NetController {
 	 */
 	public synchronized boolean sendMsg(int process, String msg) {
 		try {
-			if (outSockets[process] == null)
+			if (outSockets.get(process) == null)
 				initOutgoingConn(process);
-			outSockets[process].sendMsg(msg);
+			outSockets.get(process).sendMsg(msg);
 		} catch (IOException e) { 
-			if (outSockets[process] != null) {
-				outSockets[process].cleanShutdown();
-				outSockets[process] = null;
+			if (outSockets.get(process) != null) {
+				outSockets.get(process).cleanShutdown();
+				outSockets.set(process, null);
 				try{
 					initOutgoingConn(process);
-                        		outSockets[process].sendMsg(msg);	
+                        		outSockets.get(process).sendMsg(msg);	
 				} catch(IOException e1){
-					if (outSockets[process] != null) {
-						outSockets[process].cleanShutdown();
-	                	outSockets[process] = null;
+					if (outSockets.get(process) != null) {
+						outSockets.get(process).cleanShutdown();
+	                	outSockets.set(process, null);
 					}
 					config.logger.info(String.format("Server %d: Msg to %d failed.",
                         config.procNum, process));
