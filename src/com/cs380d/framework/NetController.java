@@ -32,6 +32,7 @@ public class NetController {
 	private final Config config;
 	private final List<IncomingSock> inSockets;
 	private final HashMap<Integer,OutgoingSock> outSockets;
+	private final HashMap<Integer, Boolean> upConnections;
 	private final ListenServer listener;
 	
 	public NetController(Config config) {
@@ -39,6 +40,7 @@ public class NetController {
 		inSockets = Collections.synchronizedList(new ArrayList<IncomingSock>());
 		listener = new ListenServer(config, inSockets);
 		outSockets = new HashMap<Integer,OutgoingSock>();
+		upConnections = new HashMap<Integer,Boolean>();
 		listener.start();
 	}
 	
@@ -52,6 +54,25 @@ public class NetController {
 	 */
 	public void add(int id) {
 		config.addNode(id);
+		upConnections.put(id, true);
+	}
+	
+	public void breakConnection(int id) {
+		if (!upConnections.containsKey(id)) {
+			config.logger.info(String.format("Server %d: Invalid connection state to %d. Cannot break.",
+                    config.procNum, id));
+		} else {
+			upConnections.put(id, false);
+		}
+	}
+
+	public void restoreConnection(int id) {
+		if (!upConnections.containsKey(id)) {
+			config.logger.info(String.format("Server %d: Invalid connection state to %d. Cannot restore.",
+                    config.procNum, id));
+		} else {
+			upConnections.put(id, true);
+		}
 	}
 	
 	// Establish outgoing connection to a process
@@ -73,6 +94,17 @@ public class NetController {
 	 * @return bool indicating success
 	 */
 	public synchronized boolean sendMsg(int process, String msg) {
+		
+		if (!upConnections.containsKey(process)) {
+			config.logger.info(String.format("Server %d: Invalid connection state to %d.",
+                    config.procNum, process));
+			return false;
+		} else if (!upConnections.get(process)) {
+			config.logger.info(String.format("Server %d: Not sending message to %d: Broken Connection.",
+                    config.procNum, process));
+			return false;
+		}
+				
 		try {
 			if (outSockets.get(process) == null)
 				initOutgoingConn(process);

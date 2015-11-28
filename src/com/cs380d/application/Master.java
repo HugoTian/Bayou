@@ -31,6 +31,9 @@ public class Master {
 				 * Retire the server with the id specified. This should block until
 				 * the server can tell another server of its retirement
 				 */ 
+				
+				// BLOCK and TELL
+				
 				servers.get(serverId).shutdown();
 				servers.put(serverId, null);
 				servers.remove(serverId);
@@ -50,6 +53,8 @@ public class Master {
 				 * Break the connection between a client and a server or between
 				 * two servers
 				 */
+				servers.get(id1).nc.breakConnection(id2);
+				servers.get(id2).nc.breakConnection(id1);
 				break;
 			case "restoreConnection":
 				id1 = Integer.parseInt(inputLine[1]);
@@ -58,6 +63,8 @@ public class Master {
 				 * Restore the connection between a client and a server or between
 				 * two servers
 				 */
+				servers.get(id1).nc.restoreConnection(id2);
+				servers.get(id2).nc.restoreConnection(id1);
 				break;
 			case "pause":
 				/*
