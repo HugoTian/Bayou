@@ -7,7 +7,10 @@ public class Server extends Node {
 
 	
 	public Server(int id, Set<Integer> set) {
-		super(id, set);
-		
+		super(id, set);		
+	}
+	
+	public void shutdown() {
+		nc.shutdown();
 	}
 }
