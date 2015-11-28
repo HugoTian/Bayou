@@ -15,8 +15,11 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -28,14 +31,14 @@ import java.util.logging.Level;
 public class NetController {
 	private final Config config;
 	private final List<IncomingSock> inSockets;
-	private final ArrayList<OutgoingSock> outSockets;
+	private final HashMap<Integer,OutgoingSock> outSockets;
 	private final ListenServer listener;
 	
 	public NetController(Config config) {
 		this.config = config;
 		inSockets = Collections.synchronizedList(new ArrayList<IncomingSock>());
 		listener = new ListenServer(config, inSockets);
-		outSockets = new ArrayList<OutgoingSock>(config.numProcesses);
+		outSockets = new HashMap<Integer,OutgoingSock>();
 		listener.start();
 	}
 	
@@ -47,10 +50,8 @@ public class NetController {
 	 *   
 	 *   BGB
 	 */
-	public void add() {
-		config.addNode();
-		listener.update(inSockets);						//BGB: needed?
-		outSockets.ensureCapacity(outSockets.size()+1);
+	public void add(int id) {
+		config.addNode(id);
 	}
 	
 	// Establish outgoing connection to a process
@@ -58,7 +59,7 @@ public class NetController {
 		if (outSockets.get(proc) != null)
 			throw new IllegalStateException("proc " + proc + " not null");
 		
-		outSockets.set(proc, new OutgoingSock(new Socket(config.addresses.get(proc), config.ports.get(proc))));
+		outSockets.put(proc, new OutgoingSock(new Socket(config.addresses.get(proc), config.ports.get(proc))));
 		config.logger.info(String.format("Server %d: Socket to %d established", 
 				config.procNum, proc));
 	}
@@ -77,16 +78,16 @@ public class NetController {
 				initOutgoingConn(process);
 			outSockets.get(process).sendMsg(msg);
 		} catch (IOException e) { 
-			if (outSockets.get(process) != null) {
+			if (outSockets.containsKey(process)) {
 				outSockets.get(process).cleanShutdown();
-				outSockets.set(process, null);
+				outSockets.remove(process);
 				try{
 					initOutgoingConn(process);
                         		outSockets.get(process).sendMsg(msg);	
 				} catch(IOException e1){
-					if (outSockets.get(process) != null) {
+					if (outSockets.containsKey(process)) {
 						outSockets.get(process).cleanShutdown();
-	                	outSockets.set(process, null);
+	                	outSockets.remove(process);
 					}
 					config.logger.info(String.format("Server %d: Msg to %d failed.",
                         config.procNum, process));
@@ -140,7 +141,7 @@ public class NetController {
                     sock.cleanShutdown();
         }
 		if(outSockets != null) {
-            for (OutgoingSock sock : outSockets)
+            for (OutgoingSock sock : outSockets.values())
 			    if(sock != null)
                     sock.cleanShutdown();
         }

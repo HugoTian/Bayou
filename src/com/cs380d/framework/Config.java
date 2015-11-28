@@ -11,21 +11,23 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class Config {
   /**
-   * Array of addresses of other hosts.  All hosts should have identical info here.
+   * Map of addresses of other hosts.  All hosts should have identical info here.
    */
-  public ArrayList<InetAddress> addresses;
+  public HashMap<Integer,InetAddress> addresses;
 
 
   /**
-   * Array of listening port of other hosts.  All hosts should have identical info here.
+   * Map of listening port of other hosts.  All hosts should have identical info here.
    */
-  public ArrayList<Integer> ports;
+  public HashMap<Integer, Integer> ports;
 
   /**
    * Total number of hosts
@@ -51,7 +53,7 @@ public class Config {
    * @param numServers, index
    * @throws IOException
    */
-  public Config(int index, int numServers) {
+  public Config(int id, Set<Integer> servers) {
 
     logger = Logger.getLogger("NetFramework");
     FileHandler fh;
@@ -63,7 +65,7 @@ public class Config {
       fh.setFormatter(formatter);
 
       // the following statement is used to log any messages
-      logger.setUseParentHandlers(false);
+      logger.setUseParentHandlers(true);
     } catch (SecurityException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -71,19 +73,20 @@ public class Config {
     }
 
 
-    numProcesses = numServers;
-    procNum = index;
-    addresses = new ArrayList<InetAddress>(numProcesses);
-    ports = new ArrayList<Integer>(numProcesses);
+    numProcesses = servers.size();
+    procNum = id;
+    addresses = new HashMap<Integer, InetAddress>();
+    ports = new HashMap<Integer, Integer>();
 
-    for (int i = 0; i < numProcesses; i++) {
-      ports.set(i,(PORTBASE + i));
+    for (int i : servers) {
+      ports.put(i,(PORTBASE + i));
       try {
-        addresses.set(i,InetAddress.getByName(ADDR));
+        addresses.put(i,InetAddress.getByName(ADDR));
       } catch (UnknownHostException e) {
         e.printStackTrace();
       }
-      //System.out.printf("%d: %d @ %s\n", i, ports[i], addresses[i]);
+  	//for (int idx = 0; idx < numProcesses; idx++)
+  	//  System.out.printf("%d: %d @ %s\n", idx, ports.get(idx), addresses.get(idx)); 
     }
   }
 
@@ -93,11 +96,11 @@ public class Config {
   public Config() {
   }
 
-  public void addNode() {
+  public void addNode(int id) {
 
-	ports.add(numProcesses,(PORTBASE + numProcesses));
+	ports.put(id,(PORTBASE + id));
 	try {
-	  addresses.set(numProcesses,InetAddress.getByName(ADDR));
+	  addresses.put(id,InetAddress.getByName(ADDR));
 	} catch (UnknownHostException e) {
 	  e.printStackTrace();
 	}

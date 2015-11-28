@@ -10,6 +10,7 @@ package com.cs380d.framework;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class ListenServer extends Thread {
@@ -38,10 +39,6 @@ public class ListenServer extends Thread {
 			conf.logger.log(Level.SEVERE, errStr);
 			throw new Error(errStr);
 		}
-	}
-
-	public void update(List<IncomingSock> sockets) {
-		this.socketList = sockets;
 	}
 	
 	public void run() {
