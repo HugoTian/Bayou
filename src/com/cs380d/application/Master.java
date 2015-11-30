@@ -3,6 +3,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * CS 380D - Distibuted Computing I
+ * Project 3 _ Bayou
+ * Master class
+ * @author zhangtian
+ * @author Bradley Beth
+ *
+ */
 public class Master {
 
 	public static HashMap<Integer, Server> servers = new HashMap<Integer, Server>();
@@ -30,7 +38,10 @@ public class Master {
 				 * the server can tell another server of its retirement
 				 */ 
 				
-				// BLOCK and TELL
+				// TODO: BLOCK and TELL
+				// This may require removing/altering the removeServer 
+				// loop below. Until then, the Master removes the server
+				// from all servers' lists. ---BGB
 				
 				servers.get(serverId).shutdown();
 				servers.put(serverId, null);
