@@ -24,7 +24,9 @@ public class Node {
 
 		config = new Config(pid,serverIds);
 		nc = new NetController(config);
-	
+		for (int s : serverIds) 
+			nc.add(s);
+		
 	}		  
 
 	public Node() {

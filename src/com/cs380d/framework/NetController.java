@@ -55,6 +55,13 @@ public class NetController {
 	public void add(int id) {
 		config.addNode(id);
 		upConnections.put(id, true);
+		try {
+			initOutgoingConn(id);
+		} catch (IOException e) {
+			config.logger.info(String.format("Server %d: Cannot connect socket to %d. Cannot add.",
+                    config.procNum, id));
+		}
+		
 	}
 	
 	public void breakConnection(int id) {
@@ -77,12 +84,14 @@ public class NetController {
 	
 	// Establish outgoing connection to a process
 	private synchronized void initOutgoingConn(int proc) throws IOException {
-		if (outSockets.get(proc) != null)
-			throw new IllegalStateException("proc " + proc + " not null");
 		
-		outSockets.put(proc, new OutgoingSock(new Socket(config.addresses.get(proc), config.ports.get(proc))));
-		config.logger.info(String.format("Server %d: Socket to %d established", 
-				config.procNum, proc));
+		if (outSockets.get(proc) == null) {
+			//removed exception because inits happen on dynamic add now ---BGB
+			//	throw new IllegalStateException("proc " + proc + " not null");
+			outSockets.put(proc, new OutgoingSock(new Socket(config.addresses.get(proc), config.ports.get(proc))));
+			config.logger.info(String.format("Server %d: Socket to %d established", 
+					config.procNum, proc));
+		}
 	}
 	
 	/**
@@ -106,7 +115,7 @@ public class NetController {
 		}
 				
 		try {
-			if (outSockets.get(process) == null)
+			if (outSockets.get(process) == null) 
 				initOutgoingConn(process);
 			outSockets.get(process).sendMsg(msg);
 		} catch (IOException e) { 
@@ -178,6 +187,13 @@ public class NetController {
                     sock.cleanShutdown();
         }
 		
+	}
+	
+	/**
+	 * Remove server from outsocket list. 
+	 */
+	public void removeServer (int s) {
+		outSockets.remove(s);
 	}
 
 }

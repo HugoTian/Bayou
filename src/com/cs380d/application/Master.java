@@ -35,6 +35,8 @@ public class Master {
 				servers.get(serverId).shutdown();
 				servers.put(serverId, null);
 				servers.remove(serverId);
+				for (Server s : servers.values())
+					s.nc.removeServer(serverId);
 				break;
 			case "joinClient":
 				clientId = Integer.parseInt(inputLine[1]);
@@ -140,6 +142,12 @@ public class Master {
 				/* EX: dumpMsgs 2 */
 				int dumpId = Integer.parseInt(inputLine[1]);
 				System.out.println(servers.get(dumpId).nc.getReceivedMsgs());				
+				break;
+
+			case "dumpAll":				
+				/* EX: dumpAll */
+				for (Server s : servers.values())
+					System.out.println(s.pid +":\t"+s.nc.getReceivedMsgs());				
 				break;
 		/**
 		 * <--BGB
