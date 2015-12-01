@@ -1,5 +1,5 @@
 package com.cs380d.application;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -200,5 +200,6 @@ public class Master {
 				
 			}
 		}
+		scan.close();
 	}
 }

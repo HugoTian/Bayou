@@ -28,11 +28,11 @@ public class Server extends Node {
 	 */
 		
 	public static void pauseAnti_Entropy() {
-		paused = true;
+		Server.paused = true;
 	}
 
 	public static void startAnti_Entropy() {
-		paused = false;
+		Server.paused = false;
 	}
 
 }
