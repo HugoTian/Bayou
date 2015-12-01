@@ -75,8 +75,15 @@ public class Master {
 				 * Break the connection between a client and a server or between
 				 * two servers
 				 */
-				servers.get(id1).nc.breakConnection(id2);
-				servers.get(id2).nc.breakConnection(id1);
+				if (servers.containsKey(id1))
+					servers.get(id1).nc.breakConnection(id2);
+				else if(clients.containsKey(id1))
+					clients.get(id1).nc.breakConnection(id2);
+				if (servers.containsKey(id2))
+					servers.get(id2).nc.breakConnection(id1);
+				else if(clients.containsKey(id2))
+					clients.get(id2).nc.breakConnection(id1);
+					
 				break;
 			case "restoreConnection":
 				id1 = Integer.parseInt(inputLine[1]);
@@ -85,8 +92,14 @@ public class Master {
 				 * Restore the connection between a client and a server or between
 				 * two servers
 				 */
-				servers.get(id1).nc.restoreConnection(id2);
-				servers.get(id2).nc.restoreConnection(id1);
+				if (servers.containsKey(id1))
+					servers.get(id1).nc.restoreConnection(id2);
+				else if(clients.containsKey(id1))
+					clients.get(id1).nc.restoreConnection(id2);
+				if (servers.containsKey(id2))
+					servers.get(id2).nc.restoreConnection(id1);
+				else if(clients.containsKey(id2))
+					clients.get(id2).nc.restoreConnection(id1);
 				break;
 			case "pause":
 				/*
@@ -174,10 +187,10 @@ public class Master {
 
 			case "dumpAll":				
 				/* EX: dumpAll */
-				System.out.println("SERVERS\n=======");
+				System.out.println("\nSERVERS\n=======");
 				for (Server s : servers.values())
 					System.out.println(s.pid +":\t"+s.nc.getReceivedMsgs());
-				System.out.println("CLIENTS\n=======");
+				System.out.println("\nCLIENTS\n=======");
 				for (Client c : clients.values())
 					System.out.println(c.pid +":\t"+c.nc.getReceivedMsgs());
 				break;
