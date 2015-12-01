@@ -25,7 +25,6 @@ public class ListenServer extends Thread {
 	protected ListenServer(Config conf, List<IncomingSock> sockets) {
 		this.conf = conf;
 		this.socketList = sockets;
-
 		procNum = conf.procNum;
 		port = conf.ports.get(procNum);
 		try {

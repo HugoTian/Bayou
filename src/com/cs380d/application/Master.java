@@ -14,6 +14,8 @@ import java.util.Scanner;
 public class Master {
 
 	public static HashMap<Integer, Server> servers = new HashMap<Integer, Server>();
+	public static HashMap<Integer, Client> clients = new HashMap<Integer, Client>();
+	
 	
 	public static void main(String [] args) {
 		Scanner scan = new Scanner(System.in);
@@ -46,6 +48,8 @@ public class Master {
 				servers.get(serverId).shutdown();
 				servers.put(serverId, null);
 				servers.remove(serverId);
+				
+				// Tell all servers I am gone.
 				for (Server s : servers.values())
 					s.nc.removeServer(serverId);
 				break;
@@ -56,6 +60,13 @@ public class Master {
 				 * Start a new client with the id specified and connect it to 
 				 * the server
 				 */
+				if (clients.containsKey(clientId)) {
+					clients.get(clientId).shutdown();
+					clients.put(clientId, null);
+					clients.remove(clientId);
+				}			
+				clients.put(clientId, new Client(clientId,serverId));
+				servers.get(serverId).nc.add(clientId);		
 				break;
 			case "breakConnection":
 				id1 = Integer.parseInt(inputLine[1]);
@@ -146,19 +157,29 @@ public class Master {
 				int fromId = Integer.parseInt(inputLine[1]);
 				int toId = Integer.parseInt(inputLine[2]);
 				String msg = inputLine[3];
-				servers.get(fromId).nc.sendMsg(toId, msg);
+				if (servers.containsKey(fromId))
+					servers.get(fromId).nc.sendMsg(toId, msg);
+				else if (clients.containsKey(fromId))
+					clients.get(fromId).nc.sendMsg(toId, msg);
 				break;
 				
 			case "dumpMsgs":				
 				/* EX: dumpMsgs 2 */
 				int dumpId = Integer.parseInt(inputLine[1]);
-				System.out.println(servers.get(dumpId).nc.getReceivedMsgs());				
+				if (servers.containsKey(dumpId))				
+					System.out.println(servers.get(dumpId).nc.getReceivedMsgs());				
+				else if (clients.containsKey(dumpId))
+					System.out.println(clients.get(dumpId).nc.getReceivedMsgs());
 				break;
 
 			case "dumpAll":				
 				/* EX: dumpAll */
+				System.out.println("SERVERS\n=======");
 				for (Server s : servers.values())
-					System.out.println(s.pid +":\t"+s.nc.getReceivedMsgs());				
+					System.out.println(s.pid +":\t"+s.nc.getReceivedMsgs());
+				System.out.println("CLIENTS\n=======");
+				for (Client c : clients.values())
+					System.out.println(c.pid +":\t"+c.nc.getReceivedMsgs());
 				break;
 		/**
 		 * <--BGB
