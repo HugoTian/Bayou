@@ -53,23 +53,6 @@ public class Config {
   public Config(int index, int numServers) {
 
     logger = Logger.getLogger("NetFramework");
-    FileHandler fh;
-    try {
-      // This block configure the logger with handler and formatter
-      fh = new FileHandler("netLog.txt");
-      logger.addHandler(fh);
-      SimpleFormatter formatter = new SimpleFormatter();
-      fh.setFormatter(formatter);
-
-      // the following statement is used to log any messages
-      logger.setUseParentHandlers(false);
-    } catch (SecurityException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-
     numProcesses = numServers;
     procNum = index;
     addresses = new InetAddress[numProcesses];
