@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * SessionManager as specified in
- * "Session Guarantees for Weakly Consistent Replicated Data"
+ * "Session Guarantees for Weakly Consistent Replicated Data" Paper
  * @author zhangtian 
  */
 public class SessionManager implements Serializable {
@@ -37,8 +37,6 @@ public class SessionManager implements Serializable {
 
   /**
    * Check ReadVector and WriteVector against Version Vector on server
-   * @param vv Version Vector
-   * @return whether Version Vector dominates both Read/Write Vector
    */
   public boolean isDominatedBy(VersionVector vv) {
     return dominates(vv.vector, readVector) && dominates(vv.vector, writeVector);
@@ -46,12 +44,8 @@ public class SessionManager implements Serializable {
 
   /**
    * Whether vector a dominates vector b
-   * @param supV : super vector
-   * @param subV : sub vector
-   * @return
    */
-  public boolean dominates(Map<String, Integer> supV,
-                           Map<String, Integer> subV ) {
+  public boolean dominates(Map<String, Integer> supV,Map<String, Integer> subV ) {
     for (String rid : subV.keySet()) {
       if (!supV.containsKey(rid)) {
         if (subV.get(rid) != 0) {

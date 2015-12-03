@@ -145,11 +145,11 @@ public class Server extends Node {
       } 
       
       else if (msg instanceof CreateReplyMessage) {
-        CreateReplyMessage cReply = (CreateReplyMessage) msg;
-        setUp(cReply);
+        CreateReplyMessage creatReply = (CreateReplyMessage) msg;
+        setUp(creatReply);
       }
 
-      /* anti-entropy messages */
+      // anti-entropy messages 
       else if (msg instanceof AntiEntroyRequestMessage) {
         send(new AntiEntroyReplyMessage(pid, msg.src, vv, maxCSN));
       } 
@@ -167,7 +167,7 @@ public class Server extends Node {
         antiEntropyACKHandler(ackMsg);
       }
 
-      /* primary handoff Message */
+      // change primary
       else if (msg instanceof PrimaryMessage) {
         PrimaryMessage pho = (PrimaryMessage) msg;
         isPrimary = true;

@@ -72,7 +72,7 @@ public class Node extends Thread {
    */
   public void send(Message msg) {
     if (debug) {
-      print("Sent: " + msg.toString());
+      print("Sent the message: " + msg.toString());
     }
     // if pause, then 
     if (pause && msg.isAntiEntroymessage()) {

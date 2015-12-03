@@ -1,7 +1,8 @@
 package com.cs380d.message;
 
 /**
- * Class for primary message
+ * Class for primary message 
+ * Used when primary retire, and should have a new primary
  * @author Tian ZHang
  */
 public class PrimaryMessage extends Message {
