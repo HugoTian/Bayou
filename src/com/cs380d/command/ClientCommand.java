@@ -1,29 +1,26 @@
 package com.cs380d.command;
 
-
-/*
- *  Client command Class
- *  @author Tian Zhang
+/**
+ * Client Command for Bayou
+ * @author zhangtian
  */
-public class ClientCommand  extends Command{
-
-	/**
-	 *  Serial Version ID
+public class ClientCommand extends Command {
+    /**
+	 *  Default ID 
 	 */
-	private static final long serialVersionUID = 1L;
-    
-    public String song;
-    public String url;
+  private static final long serialVersionUID = 1L;
+  public String song;
+  public String url;
 
-    // Constructor
-	public ClientCommand (String s) {
-	    song = s;
-	    url = "";
-	}
+  // constructor with only song
+  public ClientCommand (String s) {
+    song = s;
+    url = "";
+  }
 
-	// Constructor
-	public ClientCommand(String s, String u) {
-	    song = s;
-	    url = u;
-	}
+  // constructor with song and url
+  public ClientCommand(String s, String u) {
+    song = s;
+    url = u;
+  }
 }

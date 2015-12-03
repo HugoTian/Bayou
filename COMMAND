@@ -1,1 +1,1 @@
-./Master.py
+java -cp bin:lib/commons-codec-1.9.jar com.cs380d.application.Master

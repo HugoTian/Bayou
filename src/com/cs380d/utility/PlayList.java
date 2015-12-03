@@ -7,31 +7,31 @@ import com.cs380d.command.ClientCommand;
 import com.cs380d.command.Delete;
 import com.cs380d.command.Put;
 
-/*  Play list class that manage the add, delete, and get of song url pair
- *  @author Tian Zhang
+/*
+ *  Class for playlist
+ *  @author Tian Zhang 
  */
-
 public class PlayList {
-  // the play list
   public Hashtable<String, String> pl;
 
-  // Default constructor
+  // Constructor
   public PlayList () {
     pl = new Hashtable<String, String>();
   }
 
-  // Whether contains a song
+  // whether it contain a song
   public boolean containsSong(String song) {
     return pl.containsKey(song);
   }
   
-  //add song to play list
+  
+  // add a song to the playlist
   public boolean add(String song, String url){
     pl.put(song, url);
     return true;
   }
 
-  // delete a song from play list
+  // delete a song in playlist
   public boolean delete(String song){
     if(pl.containsKey(song)){
       pl.remove(song);
@@ -41,18 +41,16 @@ public class PlayList {
     }
   }
 
-  // get a song from play list
-  // if nothing, then return not exist
+  //get a song in playlist
   public String get(String song) {
     if (pl.containsKey(song)) {
       return pl.get(song);
     } else {
-      return "NOT-EXIST";
+      return "NOT_FOUND";
     }
   }
 
-  // Edit or update the son in playlist
-  // In terms of client command
+  // update a song in playlist
   public boolean update (ClientCommand cmd) {
     if (cmd instanceof Put) {
       return add(cmd.song, cmd.url);
@@ -63,15 +61,16 @@ public class PlayList {
     }
   }
 
+  // print the platlist
   public void print() {
     System.out.println();
-    System.out.println("=========================PlayList====================");
+    System.out.println("==================== PlayList =============");
     int i = 1;
     for (Map.Entry<String, String> item : pl.entrySet()) {
       System.out.println(i + ". Song Name: " + item.getKey() + "\tURL: " + item.getValue());
       i++;
     }
-    System.out.println("======================== End  =======================");
+    System.out.println("=============== End  ======================");
     System.out.println();
   }
 
