@@ -5,13 +5,13 @@ package com.cs380d.message;
  * Ask for receiver's information
  * @author zhangtian 
  */
-public class AntiEntroyRequestMessage extends Message{
+public class AntiEntropyRequestMessage extends Message{
   /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-  public AntiEntroyRequestMessage (int s, int d) {
+  public AntiEntropyRequestMessage (int s, int d) {
     super(s, d);
   }
 

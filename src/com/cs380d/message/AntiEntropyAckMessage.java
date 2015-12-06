@@ -8,7 +8,7 @@ import com.cs380d.utility.Writes;
  * Ack with the writes the receiver don't know about
  * @author zhangtian
  */
-public class AntiEntroyAckMessage extends Message {
+public class AntiEntropyAckMessage extends Message {
   /**
 	 * 
 	 */
@@ -19,14 +19,14 @@ public Writes write;
 
   //constructor
   // the message that no need to commit
-  public AntiEntroyAckMessage(int s, int d, Writes w) {
+  public AntiEntropyAckMessage(int s, int d, Writes w) {
     super (s, d);
     write = w;
     commit = false;
   }
   //constructor
   // the message that need commit
-  public AntiEntroyAckMessage(int s, int d, Writes w, boolean c) {
+  public AntiEntropyAckMessage(int s, int d, Writes w, boolean c) {
     super (s, d);
     write = w;
     commit = c;

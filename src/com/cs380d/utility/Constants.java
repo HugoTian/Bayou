@@ -9,7 +9,7 @@ public class Constants {
   public static final boolean debug = false;
 
   // max number of node
-  public static final int MAX_NODE = 50;
+  public static final int MAX_NODE = 100;
   
   //sleep time for all clear function 
   public static final int SLEEP = 500;

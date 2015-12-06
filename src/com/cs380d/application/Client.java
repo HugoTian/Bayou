@@ -27,7 +27,21 @@ public class Client extends Node {
     sm = new SessionManager();
     start();
   }
+  
+  public Client (int pid, int sid, SessionManager oldSm) {
+	    super(pid);
+	    serverId = sid;
+	    sm = oldSm;
+	    start();
+	  }
+  
 
+  public Client switchServer(int newSid) {
+	nc.shutdown();
+	return (new Client(this.pid, newSid, this.sm));
+	
+  }
+  
   public String name () {
     return "Client";
   }
@@ -71,8 +85,10 @@ public class Client extends Node {
           if (rqstRply.suc) {
             if (!rqstRply.url.equals("NOT_FOUND")) {
               sm.updateRead(rqstRply.write);
+              System.out.println(rqstRply.cmd.song + ":" + rqstRply.url);
+            } else {
+            	System.out.println(rqstRply.cmd.song + ":ERR_KEY");
             }
-            System.out.println(rqstRply.cmd.song + ":" + rqstRply.url);
           } else {
             System.out.println(rqstRply.cmd.song + ":ERR_DEP");
           }

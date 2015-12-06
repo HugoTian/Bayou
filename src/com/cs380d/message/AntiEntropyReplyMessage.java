@@ -8,7 +8,7 @@ import com.cs380d.utility.VersionVector;
  * Reply with current versionVector and highest committed sequence number
  * @author zhangtian
  */
-public class AntiEntroyReplyMessage extends Message {
+public class AntiEntropyReplyMessage extends Message {
   /**
 	 * 
 	 */
@@ -17,7 +17,7 @@ public class AntiEntroyReplyMessage extends Message {
     public int CNS;
     
   // constructor
-  public AntiEntroyReplyMessage(int s, int d, VersionVector vector, int cns) {
+  public AntiEntropyReplyMessage(int s, int d, VersionVector vector, int cns) {
     super(s, d);
     vv = vector;
     CNS = cns;

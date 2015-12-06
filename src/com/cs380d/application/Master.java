@@ -81,7 +81,10 @@ public class Master {
           * Start a new client with the id specified and connect it to
 	        * the server
           */
-        nodes[clientId] = new Client(clientId, serverId);
+        if (nodes[clientId] == null)
+        	nodes[clientId] = new Client(clientId, serverId);
+        else
+        	nodes[clientId] = ((Client)nodes[clientId]).switchServer(serverId);
       } else if (inputLine[0].equals("breakConnection")) {
         id1 = Integer.parseInt(inputLine[1]);
         id2 = Integer.parseInt(inputLine[2]);

@@ -1,0 +1,11 @@
+joinServer 0
+joinServer 1
+joinClient 2 0
+breakConnection 0 1
+put 2 eyesOfTexas utexas.edu
+stabilize
+get 2 eyesOfTexas
+joinClient 2 1
+stabilize
+get 2 eyesOfTexas
+

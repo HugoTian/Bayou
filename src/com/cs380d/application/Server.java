@@ -12,9 +12,9 @@ import com.cs380d.command.Get;
 import com.cs380d.command.Put;
 import com.cs380d.command.Retire;
 import com.cs380d.command.ServerCommand;
-import com.cs380d.message.AntiEntroyAckMessage;
-import com.cs380d.message.AntiEntroyReplyMessage;
-import com.cs380d.message.AntiEntroyRequestMessage;
+import com.cs380d.message.AntiEntropyAckMessage;
+import com.cs380d.message.AntiEntropyReplyMessage;
+import com.cs380d.message.AntiEntropyRequestMessage;
 import com.cs380d.message.ClientMessage;
 import com.cs380d.message.ClientReplyMessage;
 import com.cs380d.message.CreateMessage;
@@ -150,20 +150,20 @@ public class Server extends Node {
       }
 
       // anti-entropy messages 
-      else if (msg instanceof AntiEntroyRequestMessage) {
-        send(new AntiEntroyReplyMessage(pid, msg.src, vv, maxCSN));
+      else if (msg instanceof AntiEntropyRequestMessage) {
+        send(new AntiEntropyReplyMessage(pid, msg.src, vv, maxCSN));
       } 
       
-      else if (msg instanceof AntiEntroyReplyMessage) {
-        AntiEntroyReplyMessage m = (AntiEntroyReplyMessage) msg;
+      else if (msg instanceof AntiEntropyReplyMessage) {
+        AntiEntropyReplyMessage m = (AntiEntropyReplyMessage) msg;
         anti_entropy(m);
         if (toRetire) {
           retire(msg.src);
         }
       } 
       
-      else if (msg instanceof AntiEntroyAckMessage) {
-        AntiEntroyAckMessage ackMsg = (AntiEntroyAckMessage) msg;
+      else if (msg instanceof AntiEntropyAckMessage) {
+        AntiEntropyAckMessage ackMsg = (AntiEntropyAckMessage) msg;
         antiEntropyACKHandler(ackMsg);
       }
 
@@ -197,7 +197,7 @@ public class Server extends Node {
    */
   public void spreadGossip() {
     for (int node : connected) {
-      send(new AntiEntroyRequestMessage(pid, node));
+      send(new AntiEntropyRequestMessage(pid, node));
     }
   }
 
@@ -208,7 +208,7 @@ public class Server extends Node {
   public void spreadGossip(int src) {
     for (int node : connected) {
       if (node != src) {
-        send(new AntiEntroyRequestMessage(pid, node));
+        send(new AntiEntropyRequestMessage(pid, node));
       }
     }
   }
@@ -283,7 +283,7 @@ public class Server extends Node {
   /**
    * Propagating committed writes upon receiving reply from R
    */
-  public void anti_entropy(AntiEntroyReplyMessage msg) {
+  public void anti_entropy(AntiEntropyReplyMessage msg) {
 	//debug mode
     if (debug) {
       System.out.println("\n\n");
@@ -312,31 +312,31 @@ public class Server extends Node {
         if (msg.hasKey(rjID)) {
           if ( w.acceptTime <= msg.getTime(rjID)) {
             // R has the write, but doesn't know it is committed  
-            send(new AntiEntroyAckMessage(pid, msg.src, w, true));
+            send(new AntiEntropyAckMessage(pid, msg.src, w, true));
           } else {
             // R don't have the write, add committed write  
-            send(new AntiEntroyAckMessage(pid, msg.src, w));
+            send(new AntiEntropyAckMessage(pid, msg.src, w));
           }
         } else {
           /*  the Missing VV entry, don't know of rjID ...  */
           int riVrk = msg.hasKey(rkID) ? msg.getTime(rkID) : -1;
           int TSkj = w.replicaId.acceptTime;
           if (riVrk < TSkj) {
-            send(new AntiEntroyAckMessage(pid, msg.src, w));
+            send(new AntiEntropyAckMessage(pid, msg.src, w));
           }
         }
       } else {
         /* all tentative writes */
         if (msg.hasKey(rjID)) {
           if (msg.getTime(rjID) < w.acceptTime) {
-            send(new AntiEntroyAckMessage(pid, msg.src, w));
+            send(new AntiEntropyAckMessage(pid, msg.src, w));
           }
         } else {
           /*  the Missing VV entry, don't know of rjID ...  */
           int riVrk = msg.hasKey(rkID) ? msg.getTime(rkID) : -1;
           int TSkj = w.replicaId.acceptTime;
           if (riVrk < TSkj) {
-            send(new AntiEntroyAckMessage(pid, msg.src, w));
+            send(new AntiEntropyAckMessage(pid, msg.src, w));
           }
         }
       }
@@ -348,7 +348,7 @@ public class Server extends Node {
    * handler for write updates through anti-entropy process
    * @param ackMsg
    */
-  public void antiEntropyACKHandler(AntiEntroyAckMessage ackMsg) {
+  public void antiEntropyACKHandler(AntiEntropyAckMessage ackMsg) {
     if (ackMsg.commit) {
       /* I have the write, just need to commit it
        */
@@ -437,7 +437,7 @@ public class Server extends Node {
   public void connectTo(int id) {
    if (!connected.contains(id)) {
      connected.add(id);
-     send(new AntiEntroyRequestMessage(pid, id));
+     send(new AntiEntropyRequestMessage(pid, id));
      if (debug) {
        print("Reconnected with " + id);
        print(connected.toString());
