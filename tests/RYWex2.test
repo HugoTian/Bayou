@@ -1,0 +1,20 @@
+joinServer 0
+joinServer 1
+joinClient 2 0
+put 2 hello isItMeYoureLookingFor
+put 2 everything staysTheSame
+stabilize
+breakConnection 0 1
+delete 2 hello
+stabilize
+joinClient 2 1
+get 2 hello
+get 2 everything
+restoreConnection 0 1
+stabilize
+get 2 hello
+get 2 everything
+delete 2 everything 
+stabilize
+printLog 0
+printLog 1

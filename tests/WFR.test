@@ -1,0 +1,18 @@
+joinServer 0
+joinServer 1
+joinClient 2 0
+joinClient 3 0
+put 2 SongA songa.org
+stablilize
+breakConnection 0 1
+put 2 SongB songb.net
+stabilize
+get 3 SongA
+joinClient 3 1
+put 3 SongA songa.com
+stabilize
+restoreConnection 1 0
+stabilize
+get 3 SongA
+put 3 SongA songa.edu
+get 3 SongA

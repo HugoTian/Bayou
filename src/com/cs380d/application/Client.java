@@ -67,7 +67,7 @@ public class Client extends Node {
             sm.updateWrite(rqstRply.write);
           } else {
             // todo
-            System.out.print("Put failed, to be updated");
+            System.out.print("PUT failed---ERR:DEP\n");
           }
         }
         // the command is delete
@@ -76,7 +76,7 @@ public class Client extends Node {
             sm.updateWrite(rqstRply.write);
           } else {
             // todo
-            System.out.print("Del failed, to be updated");
+            System.out.print("DEL failed---ERR:DEP\n");
           }
         }
         
