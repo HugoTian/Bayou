@@ -4,8 +4,10 @@ joinClient 2 0
 breakConnection 0 1
 put 2 eyesOfTexas utexas.edu
 stabilize
-get 2 eyesOfTexas
+get 2 eyesOfOklahoma
 joinClient 2 1
 stabilize
 get 2 eyesOfTexas
-
+restoreConnection 0 1
+stabilize
+get 2 eyesOfTexas
