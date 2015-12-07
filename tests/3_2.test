@@ -1,0 +1,17 @@
+// Retirement test
+
+joinServer 0
+joinServer 1
+joinServer 2
+joinClient 3 0
+put 3 hello world
+stabilize
+retireServer 0
+joinClient 3 1
+put 3 goodbye world
+stabilize
+get 3 hello
+get 3 goodbye
+printLog 1
+printLog 2
+clean

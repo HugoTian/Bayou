@@ -1,0 +1,13 @@
+// Should get ERR_DEP
+
+joinServer 0
+joinServer 1
+joinClient 2 0
+pause
+breakConnection 0 1
+start
+put 2 hello world
+stabilize
+joinClient 2 1
+get 2 hello
+clean
