@@ -1,5 +1,8 @@
 package com.cs380d.application;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+
 import com.cs380d.command.ClientCommand;
 import com.cs380d.command.Delete;
 import com.cs380d.command.Get;
@@ -20,6 +23,8 @@ import com.cs380d.utility.SessionManager;
 public class Client extends Node {
   int serverId;
   SessionManager sm;
+  private ArrayList<ClientMessage> offline_op = new ArrayList<ClientMessage>();
+
 
   public Client (int pid, int sid) {
     super(pid);
@@ -105,7 +110,10 @@ public class Client extends Node {
    */
   public void put (String name, String url) {
     if (serverId < 0) {
-      System.out.println("disconnected with Server!");
+     // System.out.println("disconnected with Server!");
+      ClientCommand cmd = new Put(name, url);
+      ClientMessage rqst = new ClientMessage(pid, serverId, cmd, sm);
+      offline_op.add(rqst);
       return;
     }
     ClientCommand cmd = new Put(name, url);
@@ -121,7 +129,10 @@ public class Client extends Node {
 	 // if server id is negative
 	 // then it is disconnect ot that server, which means error happens
     if (serverId < 0) {
-      System.out.println("disconnected with Server!");
+      //System.out.println("disconnected with Server!");
+      ClientCommand cmd = new Delete(name);
+      ClientMessage rqst = new ClientMessage (pid, serverId, cmd, sm);
+      offline_op.add(rqst);
       return;
     }
     ClientCommand cmd = new Delete(name);
@@ -135,7 +146,10 @@ public class Client extends Node {
    */
   public void get (String name) {
     if (serverId < 0) {
-      System.out.println("disconnected with Server!");
+      //System.out.println("disconnected with Server!");
+      ClientCommand cmd = new Get(name);
+      ClientMessage rqst = new ClientMessage (pid, serverId, cmd, sm);
+      offline_op.add(rqst);
       return;
     }
     ClientCommand cmd = new Get(name);
@@ -146,6 +160,13 @@ public class Client extends Node {
   // a client connect to server
   public void connectTo(int id) {
     serverId = id;
+    if (!offline_op.isEmpty()){
+    	for (ClientMessage message : offline_op){
+    		message.dst = serverId;
+    		send(message);
+    	}
+    }
+    offline_op.clear();
   }
 
   // a client disconnect to a server
